@@ -1,11 +1,36 @@
 #!/bin/bash
-
-pass=$1
-length=`echo -n "$1"|wc -c`
+file_exists=false
 green="\e[32m"
 clear_color="\e[0m"
 red="\e[31m"
 valid=true
+
+# This code handles to get the flag and its value
+while getopts 'f:' flag; do
+  case ${flag} in
+    f) file=${OPTARG} 
+		file_exists=true
+		# Checks if the file doesn't exists
+		if ! [ -f "$file" ]; then
+			echo "${file} doesn't exists."
+			exit 1
+		fi
+	;;
+    *) echo "This flag doesn't exist"
+       exit 1 ;;
+  esac
+done
+
+# The file content is passed to the variable pass if there is a flag
+# otherwise the first argument will be put in pass
+if [[ "$file_exists" = true ]]; then
+	pass=$(cat $file)
+else
+	pass=$1
+fi
+
+#calculates the length of the password
+length=`echo -n "$pass"|wc -c`
 
 
 # Checks if the password is less than 10 characters
